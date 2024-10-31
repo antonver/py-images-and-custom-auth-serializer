@@ -39,19 +39,18 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-def create_custom_path(movie, filename):
-    _, extension = os.path.splitext(filename)
-    return os.path.join(
-        "upload-image", f"{slugify(movie.title)}-{uuid.uuid4()}{extension}"
-    )
-
-
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     duration = models.IntegerField()
     genres = models.ManyToManyField(Genre)
     actors = models.ManyToManyField(Actor)
+
+    def create_custom_path(self, filename):
+        _, extension = os.path.splitext(filename)
+        return os.path.join(
+            "upload-image", f"{slugify(self.title)}-{uuid.uuid4()}{extension}"
+        )
 
     image = models.ImageField(null=True, upload_to=create_custom_path)
 
