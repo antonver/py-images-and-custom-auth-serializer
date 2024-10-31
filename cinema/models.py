@@ -39,18 +39,19 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
+def create_custom_path(movie, filename):
+    _, extension = os.path.splitext(filename)
+    return os.path.join(
+        "upload-image", f"{slugify(movie.title)}-{uuid.uuid4()}{extension}"
+    )
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     duration = models.IntegerField()
     genres = models.ManyToManyField(Genre)
     actors = models.ManyToManyField(Actor)
-
-    def create_custom_path(movie, filename):
-        _, extension = os.path.splitext(filename)
-        return os.path.join(
-            "upload-image", f"{slugify(movie.title)}-{uuid.uuid4()}{extension}"
-        )
 
     image = models.ImageField(null=True, upload_to=create_custom_path)
 
@@ -107,9 +108,9 @@ class Ticket(models.Model):
                 raise error_to_raise(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
-                        f"number must be in available range: "
-                        f"(1, {cinema_hall_attr_name}): "
-                        f"(1, {count_attrs})"
+                                          f"number must be in available range: "
+                                          f"(1, {cinema_hall_attr_name}): "
+                                          f"(1, {count_attrs})"
                     }
                 )
 
@@ -122,11 +123,11 @@ class Ticket(models.Model):
         )
 
     def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
+            self,
+            force_insert=False,
+            force_update=False,
+            using=None,
+            update_fields=None,
     ):
         self.full_clean()
         return super(Ticket, self).save(
